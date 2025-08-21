@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wizard Brigadas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrapper">
+    <header class="header">
+      <h1>Gestión de Brigadas</h1>
+      <p class="subtitle">Metodología ágil · Prototipo sin base de datos</p>
+    </header>
+
+    <!-- Stepper -->
+    <ol class="stepper" id="stepper">
+      <li class="step active"><span>1</span> Registro de Brigada</li>
+      <li class="step"><span>2</span> Información</li>
+      <li class="step"><span>3</span> Equipamiento</li>
+      <li class="step"><span>4</span> Logística / Insumos</li>
+      <li class="step"><span>5</span> Resumen</li>
+    </ol>
+
+    <main class="card">
+      <form id="wizardForm">
+
+        <!-- STEP 1: REGISTRO BRIGADA -->
+        <section class="form-step active" data-step="1">
+          <h2>1) Registro de Brigada</h2>
+          <div class="grid-2">
+            <label>Nombre de Brigada (único)
+              <input type="text" id="brigadaNombre" placeholder="Ej: Brigada Central" required />
+            </label>
+            <label>Ubicación / Ciudad
+              <select id="brigadaCiudad">
+                <option>La Paz</option>
+                <option>Cochabamba</option>
+                <option>Santa Cruz</option>
+                <option>Oruro</option>
+                <option>Tarija</option>
+              </select>
+            </label>
+            <label>Número de Emergencia Público
+              <input type="tel" id="brigadaEmergencia" placeholder="Ej: 118" required />
+            </label>
+          </div>
+
+          <div class="section-split">
+            <div class="section-title">
+              <h3>Personal Asociado</h3>
+              <p>Registra bomberos antes de asignar roles en el formulario.</p>
+            </div>
+            <button type="button" id="addBomberoBtn" class="btn ghost">+ Agregar Bombero</button>
+          </div>
+
+          <div id="bomberosList" class="chips"></div>
+
+          <div class="actions">
+            <button type="button" id="saveBrigada" class="btn primary">Guardar Brigada</button>
+            <button type="button" class="btn next" data-next>Continuar</button>
+          </div>
+        </section>
+
+        <!-- STEP 2: INFORMACIÓN -->
+        <section class="form-step" data-step="2">
+          <h2>2) Información de la Brigada</h2>
+          <div class="grid-2">
+            <label>Seleccionar Brigada
+              <select id="brigadaSelect" required></select>
+            </label>
+
+            <label>Comandante de Brigada (filtrado)
+              <select id="selectComandante"></select>
+            </label>
+            <label>Contacto Comandante
+              <input type="tel" id="contactoComandante" disabled />
+            </label>
+
+            <label>Encargado de Logística (filtrado)
+              <select id="selectLogistica"></select>
+            </label>
+            <label>Contacto Logística
+              <input type="tel" id="contactoLogistica" disabled />
+            </label>
+
+            <label>Número de Emergencia
+              <input type="tel" id="contactoEmergencia" disabled />
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn" data-prev>Atrás</button>
+            <button type="button" class="btn outline" id="saveDraftInfo">Guardar parcial</button>
+            <button type="button" class="btn next" data-next>Siguiente</button>
+          </div>
+        </section>
+
+        <!-- STEP 3: EQUIPAMIENTO -->
+        <section class="form-step" data-step="3">
+          <h2>3) Equipamiento</h2>
+
+          <div class="section-split">
+            <div class="section-title">
+              <h3>EPP – Equipo de Protección Personal</h3>
+              <p>Cantidades por talla (0–10).</p>
+            </div>
+            <button type="button" class="btn outline" id="plantillaEPP">Usar plantilla</button>
+          </div>
+
+          <div class="grid-3">
+            <div>
+              <h4>Ropa Forestal</h4>
+              <div id="ropaContainer" class="grid-2 compact"></div>
+            </div>
+            <div>
+              <h4>Botas</h4>
+              <div id="botasContainer" class="grid-2 compact"></div>
+            </div>
+            <div>
+              <h4>Guantes</h4>
+              <div id="guantesContainer" class="grid-2 compact"></div>
+            </div>
+          </div>
+
+          <div class="section-split">
+            <div class="section-title">
+              <h3>Herramientas</h3>
+              <p>Agrega ítems con cantidad.</p>
+            </div>
+            <div class="inline">
+              <select id="herramientaSelect"></select>
+              <input type="number" id="herramientaCantidad" min="0" max="999" placeholder="Cantidad" />
+              <button type="button" id="addHerramienta" class="btn ghost">+ Agregar</button>
+            </div>
+          </div>
+          <div id="herramientasList" class="list"></div>
+
+          <div class="actions">
+            <button type="button" class="btn" data-prev>Atrás</button>
+            <button type="button" class="btn outline" id="saveDraftEquip">Guardar parcial</button>
+            <button type="button" class="btn next" data-next>Siguiente</button>
+          </div>
+        </section>
+
+        <!-- STEP 4: LOGÍSTICA + INSUMOS -->
+        <section class="form-step" data-step="4">
+          <h2>4) Logística, Alimentos y Medicamentos</h2>
+
+          <div class="grid-2">
+            <div class="card-sub">
+              <h3>Logística</h3>
+              <div class="grid-2">
+                <label>Combustible
+                  <select id="combustible">
+                    <option>Gasolina</option>
+                    <option>Diésel</option>
+                  </select>
+                </label>
+                <label>Monto (Bs.)
+                  <input type="number" id="combustibleMonto" min="0" placeholder="0" />
+                </label>
+
+                <label>Repuesto
+                  <select id="repuesto">
+                    <option>Amortiguadores</option>
+                    <option>Llantas</option>
+                    <option>Filtro de aire</option>
+                    <option>Pastillas de freno</option>
+                  </select>
+                </label>
+                <label>Monto (Bs.)
+                  <input type="number" id="repuestoMonto" min="0" placeholder="0" />
+                </label>
+              </div>
+            </div>
+
+            <div class="card-sub">
+              <div class="section-split">
+                <h3>Alimentos</h3>
+                <div class="inline">
+                  <select id="alimento">
+                    <option>Botella de Agua</option>
+                    <option>Barras energéticas</option>
+                    <option>Galletas</option>
+                    <option>Fruta</option>
+                  </select>
+                  <input type="number" id="alimentoCantidad" min="0" placeholder="Cantidad" />
+                  <button type="button" id="addAlimento" class="btn ghost">+ Agregar</button>
+                </div>
+              </div>
+              <div id="alimentosList" class="chips"></div>
+
+              <div class="section-split mt">
+                <h3>Medicamentos</h3>
+                <div class="inline">
+                  <select id="medicamento">
+                    <option>Paracetamol</option>
+                    <option>Agua oxigenada</option>
+                    <option>Gasas</option>
+                    <option>Venda elástica</option>
+                    <option>Botiquin</option>
+                  </select>
+                  <input type="number" id="medicamentoCantidad" min="0" placeholder="Cantidad" />
+                  <button type="button" id="addMedicamento" class="btn ghost">+ Agregar</button>
+                </div>
+              </div>
+              <div id="medicamentosList" class="chips"></div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn" data-prev>Atrás</button>
+            <div class="inline">
+              <button type="button" class="btn outline" id="plantillaInsumos">Usar plantilla</button>
+              <button type="button" class="btn outline" id="saveDraftLog">Guardar parcial</button>
+            </div>
+            <button type="button" class="btn next" data-next>Siguiente</button>
+          </div>
+        </section>
+
+        <!-- STEP 5: RESUMEN -->
+        <section class="form-step" data-step="5">
+          <h2>5) Revisar y Enviar</h2>
+          <div id="resumen" class="resume"></div>
+
+          <div class="actions">
+            <button type="button" class="btn" data-prev>Atrás</button>
+            <button type="submit" class="btn primary">Guardar</button>
+          </div>
+        </section>
+
+      </form>
+    </main>
+  </div>
+
+  <!-- MODAL: BOMBERO -->
+  <div id="bomberoModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Agregar Bombero</h3>
+        <button class="icon-btn" id="closeModal" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="grid-2">
+        <label>Nombre
+          <input type="text" id="bomberoNombre" placeholder="Ej: Juan Pérez" />
+        </label>
+        <label>Rol
+          <select id="bomberoRol">
+            <option>Bombero</option>
+            <option>Comandante</option>
+            <option>Logística</option>
+          </select>
+        </label>
+        <label>Teléfono
+          <input type="tel" id="bomberoTelefono" placeholder="Ej: 76543210" />
+        </label>
+        <label>Correo
+          <input type="email" id="bomberoCorreo" placeholder="ejemplo@mail.com" />
+        </label>
+      </div>
+
+      <div class="actions right">
+        <button class="btn" id="cancelModal">Cancelar</button>
+        <button class="btn primary" id="saveBombero">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
